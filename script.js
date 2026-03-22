@@ -1,4 +1,4 @@
-// قائمة الملفات (أضف ملفاتك هنا)
+// قائمة الملفات (ضع ملفات PDF الموجودة في نفس المسار)
 const pdfFiles = [
     "file1.pdf",
     "file2.pdf",
@@ -23,12 +23,12 @@ pdfFiles.forEach(file => {
 });
 
 function viewPDF(file) {
-    window.open("pdfs/" + file, "_blank");
+    window.open(file, "_blank");
 }
 
 function downloadPDF(file) {
     const link = document.createElement("a");
-    link.href = "pdfs/" + file;
+    link.href = file;
     link.download = file;
     link.click();
 }
