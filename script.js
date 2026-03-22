@@ -1,8 +1,8 @@
 // قائمة الملفات على GitHub Pages مباشرة
 const pdfFiles = [
     "BackupMarV05.pdf",
-    "file2.pdf",
-    "file3.pdf"
+    "fBackupMarV02-1.pdf"
+
 ];
 
 const container = document.getElementById("pdf-list");
