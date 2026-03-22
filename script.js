@@ -1,8 +1,6 @@
 // قائمة الملفات (ضع ملفات PDF الموجودة في نفس المسار)
 const pdfFiles = [
-    "file1.pdf",
-    "file2.pdf",
-    "file3.pdf"
+    "BackupMarV05.pdf"
 ];
 
 const container = document.getElementById("pdf-list");
