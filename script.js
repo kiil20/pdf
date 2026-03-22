@@ -1,45 +1,37 @@
-const username = "kiil20";
-const repo = "pdf";
+// قائمة الملفات على GitHub Pages مباشرة
+const pdfFiles = [
+    "BackupMarV05.pdf",
+    "file2.pdf",
+    "file3.pdf"
+];
 
-// جلب ملفات PDF من GitHub API
-const apiURL = `https://api.github.com/repos/${username}/${repo}/contents/`;
+const container = document.getElementById("pdf-list");
 
-fetch(apiURL)
-    .then(res => res.json())
-    .then(files => {
-        const container = document.getElementById("pdf-list");
+pdfFiles.forEach(file => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-        files.forEach(file => {
-            if (file.name.endsWith(".pdf")) {
-                const card = document.createElement("div");
-                card.className = "card";
+    // نستخدم رابط GitHub Pages العام مباشرة
+    const url = file; // لأن الملف في نفس المسار (pdf/)
 
-                card.innerHTML = `
-                    <h3>${file.name}</h3>
-                    <div class="buttons">
-                        <button class="view" onclick="viewPDF('${file.download_url}')">عرض</button>
-                        <button class="download" onclick="downloadPDF('${file.download_url}')">تحميل</button>
-                    </div>
-                `;
+    card.innerHTML = `
+        <h3>${file}</h3>
+        <div class="buttons">
+            <button class="view" onclick="viewPDF('${url}')">عرض</button>
+            <button class="download" onclick="downloadPDF('${url}')">تحميل</button>
+        </div>
+    `;
 
-                container.appendChild(card);
-            }
-        });
-    })
-    .catch(err => {
-        document.getElementById("pdf-list").innerHTML = "❌ حدث خطأ في تحميل الملفات";
-        console.error(err);
-   });
+    container.appendChild(card);
+});
 
-// عرض PDF داخل iframe
 function viewPDF(url) {
     const viewerContainer = document.getElementById("pdf-viewer-container");
     const viewer = document.getElementById("pdf-viewer");
-    viewer.src = url;          // تعيين الملف للإطار
-    viewerContainer.style.display = "block"; // اظهار الإطار
+    viewer.src = url; // يعرض PDF داخل iframe
+    viewerContainer.style.display = "block";
 }
 
-// تحميل PDF عند الضغط على زر التحميل
 function downloadPDF(url) {
     const link = document.createElement("a");
     link.href = url;
