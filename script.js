@@ -1,7 +1,7 @@
 const username = "kiil20";
 const repo = "pdf";
 
-// جلب الملفات من نفس المجلد (pdf)
+// جلب الملفات من GitHub API
 const apiURL = `https://api.github.com/repos/${username}/${repo}/contents/`;
 
 fetch(apiURL)
@@ -32,10 +32,12 @@ fetch(apiURL)
     });
 
 function viewPDF(url) {
+    // فتح PDF داخل نافذة جديدة بدون تحميل تلقائي
     window.open(url, "_blank");
 }
 
 function downloadPDF(url) {
+    // تحميل PDF عند الضغط على زر التحميل
     const link = document.createElement("a");
     link.href = url;
     link.download = "";
