@@ -1,7 +1,7 @@
 const username = "kiil20";
 const repo = "pdf";
 
-// جلب الملفات من GitHub API
+// جلب ملفات PDF من GitHub API
 const apiURL = `https://api.github.com/repos/${username}/${repo}/contents/`;
 
 fetch(apiURL)
@@ -29,15 +29,18 @@ fetch(apiURL)
     .catch(err => {
         document.getElementById("pdf-list").innerHTML = "❌ حدث خطأ في تحميل الملفات";
         console.error(err);
-    });
+   });
 
+// عرض PDF داخل iframe
 function viewPDF(url) {
-    // فتح PDF داخل نافذة جديدة بدون تحميل تلقائي
-    window.open(url, "_blank");
+    const viewerContainer = document.getElementById("pdf-viewer-container");
+    const viewer = document.getElementById("pdf-viewer");
+    viewer.src = url;          // تعيين الملف للإطار
+    viewerContainer.style.display = "block"; // اظهار الإطار
 }
 
+// تحميل PDF عند الضغط على زر التحميل
 function downloadPDF(url) {
-    // تحميل PDF عند الضغط على زر التحميل
     const link = document.createElement("a");
     link.href = url;
     link.download = "";
