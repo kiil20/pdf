@@ -1,39 +1,21 @@
-// قائمة الملفات على GitHub Pages مباشرة
-const pdfFiles = [
-    "BackupMarV00.pdf"
+// Function to fetch PDF file URLs from GitHub API
+async function fetchPDFFiles(repos) {
+    const pdfFiles = [];
 
-];
+    for (const repo of repos) {
+        const response = await fetch(`https://api.github.com/repos/${repo}/contents`);
+        const files = await response.json();
 
-const container = document.getElementById("pdf-list");
+        for (const file of files) {
+            if (file.name.endsWith('.pdf')) {
+                pdfFiles.push(file.download_url);
+            }
+        }
+    }
 
-pdfFiles.forEach(file => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    // نستخدم رابط GitHub Pages العام مباشرة
-    const url = file; // لأن الملف في نفس المسار (pdf/)
-
-    card.innerHTML = `
-        <h3>${file}</h3>
-        <div class="buttons">
-            <button class="view" onclick="viewPDF('${url}')">عرض</button>
-            <button class="download" onclick="downloadPDF('${url}')">تحميل</button>
-        </div>
-    `;
-
-    container.appendChild(card);
-});
-
-function viewPDF(url) {
-    const viewerContainer = document.getElementById("pdf-viewer-container");
-    const viewer = document.getElementById("pdf-viewer");
-    viewer.src = url; // يعرض PDF داخل iframe
-    viewerContainer.style.display = "block";
+    return pdfFiles;
 }
 
-function downloadPDF(url) {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "";
-    link.click();
-}
+// Example usage
+const repos = ['kiil20/pdf']; // Add more repositories if needed
+fetchPDFFiles(repos).then(pdfFiles => console.log(pdfFiles));
