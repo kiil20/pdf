@@ -1,7 +1,6 @@
 // قائمة الملفات على GitHub Pages مباشرة
 const pdfFiles = [
-    "BackupMarV05.pdf",
-    "BackupMarV02-1.pdf"
+    "BackupMarV00.pdf"
 
 ];
 
