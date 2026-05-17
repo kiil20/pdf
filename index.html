@@ -1,28 +1,467 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>Improved Design</title>
+    <title>مدير ملفات PDF</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header { background-color: #4CAF50; padding: 20px; text-align: center; color: white; }
-        .container { max-width: 800px; margin: auto; padding: 20px; }
-        footer { text-align: center; padding: 20px; background-color: #4CAF50; color: white; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        header {
+            background-color: #2c3e50;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px dashed #667eea;
+            text-align: center;
+        }
+
+        .upload-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .upload-input-wrapper {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        #fileInput {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.6);
+        }
+
+        .upload-btn:active {
+            transform: translateY(0);
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .files-section {
+            margin-top: 30px;
+        }
+
+        .files-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-size: 1.5em;
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .file-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-right: 4px solid #667eea;
+        }
+
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .file-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .file-name-display {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            word-break: break-word;
+            font-size: 0.95em;
+        }
+
+        .file-date {
+            color: #666;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .file-size {
+            color: #999;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start;
+        }
+
+        .btn-download {
+            flex: 1;
+            padding: 8px 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background: #229954;
+        }
+
+        .btn-delete {
+            flex: 1;
+            padding: 8px 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: white;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="Logo" style="width:100px;">
-        <h1>Welcome to the Improved PDF Repository</h1>
+        <h1>📄 مدير ملفات PDF</h1>
+        <p>قم برفع وإدارة ملفات PDF الخاصة بك بسهولة</p>
     </header>
+
     <div class="container">
-        <h2>Project Overview</h2>
-        <p>This repository contains the PDF files with an improved layout.</p>
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="fileCount">0</div>
+                <div class="stat-label">عدد الملفات</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="totalSize">0 KB</div>
+                <div class="stat-label">إجمالي الحجم</div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2>📤 رفع ملف PDF جديد</h2>
+            <div class="upload-input-wrapper">
+                <input type="file" id="fileInput" accept=".pdf" />
+                <label for="fileInput" class="upload-btn">اختر ملف PDF</label>
+            </div>
+            <div class="file-name" id="selectedFileName"></div>
+        </div>
+
+        <div class="files-section">
+            <h2>📁 الملفات المرفوعة</h2>
+            <div id="fileList" class="file-list">
+                <div class="empty-message">لم يتم رفع أي ملفات حتى الآن</div>
+            </div>
+        </div>
     </div>
+
     <footer>
-        <p>&copy; 2026 Your Company Name</p>
+        <p>&copy; 2026 - جميع الحقوق محفوظة | مدير ملفات PDF</p>
     </footer>
+
+    <script>
+        // تخزين الملفات في LocalStorage
+        const STORAGE_KEY = 'pdfFiles';
+
+        // تحميل الملفات عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', loadFiles);
+
+        // معالج اختيار الملف
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // التحقق من نوع الملف
+            if (file.type !== 'application/pdf') {
+                showError('الرجاء اختيار ملف PDF صحيح');
+                return;
+            }
+
+            // التحقق من حجم الملف (max 50MB)
+            const maxSize = 50 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showError('حجم الملف كبير جداً. الحد الأقصى 50MB');
+                return;
+            }
+
+            // عرض اسم الملف المختار
+            document.getElementById('selectedFileName').textContent = `الملف المختار: ${file.name}`;
+
+            // قراءة الملف وحفظه
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileData = {
+                    name: file.name,
+                    size: file.size,
+                    date: new Date().toLocaleString('ar-SA'),
+                    data: e.target.result
+                };
+
+                // حفظ الملف
+                let files = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                
+                // التحقق من عدم تكرار اسم الملف
+                const existingIndex = files.findIndex(f => f.name === file.name);
+                if (existingIndex !== -1) {
+                    files[existingIndex] = fileData;
+                    showSuccess('تم تحديث الملف بنجاح!');
+                } else {
+                    files.push(fileData);
+                    showSuccess('تم رفع الملف بنجاح!');
+                }
+
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
+                
+                // إعادة تحميل الملفات
+                loadFiles();
+                
+                // مسح الحقل
+                document.getElementById('fileInput').value = '';
+                document.getElementById('selectedFileName').textContent = '';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function loadFiles() {
+            const files = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const fileList = document.getElementById('fileList');
+            const fileCount = document.getElementById('fileCount');
+            const totalSize = document.getElementById('totalSize');
+
+            fileCount.textContent = files.length;
+            
+            // حساب الحجم الإجمالي
+            const total = files.reduce((sum, f) => sum + f.size, 0);
+            totalSize.textContent = formatFileSize(total);
+
+            if (files.length === 0) {
+                fileList.innerHTML = '<div class="empty-message">لم يتم رفع أي ملفات حتى الآن</div>';
+                return;
+            }
+
+            fileList.innerHTML = files.map((file, index) => `
+                <div class="file-item">
+                    <div class="file-icon">📄</div>
+                    <div class="file-name-display">${escapeHtml(file.name)}</div>
+                    <div class="file-date">
+                        <span>📅</span>
+                        <span>${file.date}</span>
+                    </div>
+                    <div class="file-size">الحجم: ${formatFileSize(file.size)}</div>
+                    <div class="file-actions">
+                        <button class="btn-download" onclick="downloadFile(${index})">⬇️ تحميل</button>
+                        <button class="btn-delete" onclick="deleteFile(${index})">🗑️ حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function downloadFile(index) {
+            const files = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const file = files[index];
+
+            if (!file) return;
+
+            const link = document.createElement('a');
+            link.href = file.data;
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function deleteFile(index) {
+            if (!confirm('هل أنت متأكد من حذف هذا الملف؟')) return;
+
+            let files = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            files.splice(index, 1);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
+            loadFiles();
+            showSuccess('تم حذف الملف بنجاح');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showSuccess(message) {
+            const element = document.getElementById('successMessage');
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+
+        function showError(message) {
+            const element = document.getElementById('errorMessage');
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
